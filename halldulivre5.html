@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carnet de mission — 2MRC — Le Hall du Livre</title>
+<style>
+:root{
+  --bleu:#1F4E5F; --bleu-clair:#DCE9EC; --or:#B08D57; --or-clair:#F4EAD9;
+  --vert:#3F7D5B; --vert-clair:#E1F0E6; --gris:#595959; --rouge:#9C3D36;
+}
+*{box-sizing:border-box;}
+body{font-family:"Segoe UI", Calibri, Roboto, Arial, sans-serif; color:#262626; background:#f6f4f0; margin:0; line-height:1.5;}
+main{max-width:900px; margin:0 auto; padding:10px 24px 60px;}
+h1{color:var(--bleu); border-bottom:3px solid var(--or); padding-bottom:8px; margin-top:44px;}
+h3{color:var(--or); font-style:italic; margin-bottom:6px;}
+p{margin:8px 0;}
+.italic{color:var(--gris); font-style:italic;}
+.small{font-size:0.9em;}
+
+.cover{background:linear-gradient(180deg, var(--bleu-clair), #f6f4f0 85%); text-align:center; padding:50px 24px 30px;}
+.cover-title{color:var(--bleu); font-size:2.1em; margin-bottom:4px;}
+.cover-subtitle{color:var(--or); font-weight:bold; font-size:1.3em; margin-top:0;}
+.cover-box{background:var(--bleu-clair); border-radius:10px; display:inline-block; padding:16px 28px; margin:18px 0;}
+.cover-enseigne{color:var(--bleu); font-weight:bold; font-size:1.3em; margin:6px 0 0;}
+.cover-intro{margin-top:20px;}
+.cover-list{list-style:none; padding:0; margin:0 0 18px;}
+.cover-list li{margin:4px 0;}
+.cover-id{display:flex; gap:18px; justify-content:center; flex-wrap:wrap; font-weight:bold; margin-top:10px;}
+.cover-id input{margin-left:6px;}
+
+.nav{position:sticky; top:0; background:var(--bleu); padding:10px 16px; text-align:center; z-index:10; box-shadow:0 2px 6px rgba(0,0,0,.15);}
+.nav a{color:#fff; text-decoration:none; margin:0 8px; font-size:0.9em; font-weight:600;}
+.nav a:hover{text-decoration:underline;}
+.save-status{color:#fff; background:rgba(255,255,255,.15); border-radius:12px; padding:3px 10px; font-size:0.82em; margin-left:10px;}
+
+.bandeau{padding:10px 16px; border-radius:6px; color:#fff; font-weight:bold; margin:26px 0 10px;}
+.bandeau-bleu{background:var(--bleu); font-size:1.15em;}
+.bandeau-or{background:var(--or); font-size:0.95em; letter-spacing:1px;}
+.bandeau-vert{background:var(--vert); margin-top:22px;}
+.competence{color:var(--or); font-style:italic; margin:0 0 2px;}
+.duree{color:var(--gris); font-size:0.92em; margin-top:0;}
+.accroche{color:var(--gris); font-style:italic;}
+.warning{color:var(--rouge); font-weight:bold; background:#fbeceb; padding:12px 16px; border-radius:6px;}
+.save-info{background:var(--vert-clair); border-radius:8px; padding:12px 16px; margin-top:16px; font-size:0.95em;}
+
+.tbl{width:100%; border-collapse:collapse; margin:10px 0 18px; font-size:0.96em;}
+.tbl td, .tbl th{border:1px solid #cfcfcf; padding:8px 12px; text-align:left; vertical-align:top;}
+.tbl-fiche .fiche-key{background:var(--bleu-clair); font-weight:bold; width:32%;}
+.tbl-fiche .fiche-head{background:var(--or); color:#fff; font-size:1.05em;}
+#pole1 .tbl-fiche .fiche-key, #pole2 .tbl-fiche .fiche-key, #pole3 .tbl-fiche .fiche-key, #pole4 .tbl-fiche .fiche-key{background:var(--or-clair);}
+.tbl-modeemploi .fiche-key{background:var(--bleu-clair); font-weight:bold; width:22%;}
+.tbl-donnees th{background:var(--bleu); color:#fff;}
+.tbl-donnees tr:nth-child(even){background:var(--bleu-clair);}
+.tbl-saisie th{background:var(--bleu); color:#fff;}
+.tbl-saisie td{padding:4px;}
+.tbl-saisie .field-inline{width:100%; margin:0;}
+
+.box{border-radius:8px; padding:14px 18px; margin:14px 0;}
+.box-ressource{background:var(--bleu-clair);}
+.box-annexe{background:var(--or-clair);}
+.box-criteres{background:var(--vert-clair); margin-top:14px;}
+.box-title{font-weight:bold; color:var(--bleu); margin-bottom:8px; font-size:1.05em;}
+.box-title-or{color:var(--or);}
+.box-title-vert{color:var(--vert); font-size:0.98em;}
+.box ul{margin:4px 0 4px 20px; padding:0;}
+.box li{margin:3px 0;}
+
+.field{
+  width:100%; border:1px solid #b8b8b8; border-radius:6px; padding:8px 10px;
+  font-family:inherit; font-size:0.96em; margin:4px 0 14px; background:#fff;
+  resize:vertical;
+}
+.field:focus{outline:2px solid var(--or); border-color:var(--or);}
+.field-inline{margin:2px 0 14px;}
+
+.eval-block{margin:10px 0 4px;}
+.eval-row{margin-bottom:10px; background:#fff; border:1px solid #dcdcdc; border-radius:8px; padding:10px 14px;}
+.eval-label{font-weight:600; margin-bottom:6px;}
+.eval-choices{display:flex; gap:10px; flex-wrap:wrap;}
+.chip{border:1px solid #c9c9c9; border-radius:20px; padding:6px 14px; cursor:pointer; font-size:0.88em; background:#fafafa; transition:.15s;}
+.chip input{margin-right:6px;}
+.chip:hover{background:#f0f0f0;}
+.chip input:checked + span{font-weight:bold;}
+.chip:has(input:checked){background:var(--vert-clair); border-color:var(--vert);}
+
+.pole-section{margin-top:10px;}
+.mission-card{margin-bottom:36px;}
+
+.save-panel{text-align:center; background:var(--or-clair); border-radius:10px; padding:24px; margin-top:30px;}
+.btn{border:none; border-radius:8px; padding:12px 22px; font-size:1em; font-weight:bold; cursor:pointer; margin:6px;}
+.btn-or{background:var(--or); color:#fff;}
+.btn-rouge{background:#fff; color:var(--rouge); border:1px solid var(--rouge);}
+.btn:hover{opacity:0.88;}
+
+.footer{text-align:center; color:var(--gris); font-size:0.85em; padding:20px; border-top:1px solid #ddd; margin-top:20px;}
+
+@media print{
+  .nav, .save-panel{display:none;}
+  .mission-card, .pole-section{page-break-inside:avoid;}
+}
+</style>
+</head>
+<body>
+
+<header id="top" class="cover">
+  <h1 class="cover-title">🚀 BIENVENUE DANS TES MISSIONS 🚀</h1>
+  <p class="cover-subtitle">Carnet de mission — Classe de 2MRC</p>
+  <div class="cover-box">
+    <p>📚 Tu es recruté(e) comme apprenti(e) chargé(e) de la relation client à la</p>
+    <p class="cover-enseigne">Librairie « Le Hall du Livre » — Nancy</p>
+  </div>
+  <p class="cover-intro">8 missions, 4 pôles, 4 clients différents à rencontrer :</p>
+  <ul class="cover-list">
+    <li>📞 Pôle 1 — Intégrer la relation client dans un cadre omnicanal (3 missions)</li>
+    <li>🤝 Pôle 2 — Assurer le suivi de la demande (2 missions)</li>
+    <li>📊 Pôle 3 — Collecter, traiter et exploiter l'information (2 missions)</li>
+    <li>💶 Pôle 4 — Économie-Droit (1 mission)</li>
+  </ul>
+  <div class="cover-id">
+    <label>Prénom : <input type="text" class="field field-inline" data-field="identite-prenom" placeholder="Ton prénom"></label>
+    <label>Nom : <input type="text" class="field field-inline" data-field="identite-nom" placeholder="Ton nom"></label>
+    <label>Classe : <input type="text" class="field field-inline" value="2MRC" data-field="identite-classe"></label>
+  </div>
+</header>
+
+<nav class="nav">
+  <a href="#top">Accueil</a>
+  <a href="#modeemploi">Mode d'emploi</a>
+  <a href="#entreprise">Entreprise</a>
+  <a href="#pole1">Pôle 1</a>
+  <a href="#pole2">Pôle 2</a>
+  <a href="#pole3">Pôle 3</a>
+  <a href="#pole4">Pôle 4</a>
+  <a href="#bilan">Bilan</a>
+  <a href="#glossaire">Glossaire</a>
+  <button id="btnPdfTop" class="btn btn-or" style="padding:5px 12px; font-size:0.85em; margin:0 0 0 8px;">🖨️ PDF</button>
+  <span class="save-status" id="saveStatus">💾 …</span>
+</nav>
+<main>
+<section id="modeemploi">
+  <h1>🧭 Mode d'emploi de ton carnet</h1>
+  <p>Ce carnet numérique va t'accompagner à travers 4 pôles de missions à la librairie Le Hall du Livre. Pour chaque mission, tu trouveras toujours les mêmes rubriques :</p>
+  <table class="tbl tbl-modeemploi">
+    <tr><td class="fiche-key">📖 La situation</td><td>L'histoire qui te met en contexte.</td></tr>
+    <tr><td class="fiche-key">🎯 Objectifs</td><td>Ce que tu dois savoir faire à la fin de la mission.</td></tr>
+    <tr><td class="fiche-key">🔎 Ressource</td><td>Les informations, méthodes et données qui vont t'aider à trouver tes réponses. Lis-la avant de commencer !</td></tr>
+    <tr><td class="fiche-key">✍️ À toi de jouer</td><td>Les zones où tu tapes directement tes réponses.</td></tr>
+    <tr><td class="fiche-key">✅ Ta réponse doit contenir</td><td>La liste des éléments indispensables : vérifie que tu n'en as oublié aucun.</td></tr>
+    <tr><td class="fiche-key">⭐ Auto-évaluation</td><td>À la fin de chaque mission, tu cliques sur le smiley qui te correspond.</td></tr>
+  </table>
+  <div class="save-info">
+    💾 <strong>Ton travail est sauvegardé automatiquement</strong> pendant que tu écris (regarde l'indicateur en haut de la page). Tu peux fermer et revenir plus tard : tes réponses seront toujours là.<br>
+    En complément, le bouton <strong>« 📥 Télécharger mes réponses »</strong> (en bas de page) te permet de garder une copie de secours sur ton ordinateur, à tout moment.
+  </div>
+</section>
+<section id="entreprise">
+  <h1>🏢 Ton entreprise : Le Hall du Livre</h1>
+  <table class="tbl tbl-fiche">
+    <tr><td class="fiche-key">📍 Adresse</td><td>53-55 rue Saint-Dizier, 54000 Nancy — juste à côté de la place Stanislas !</td></tr>
+    <tr><td class="fiche-key">🕒 Horaires</td><td>Du lundi au samedi : 9h–20h / Le dimanche : 11h–19h</td></tr>
+    <tr><td class="fiche-key">🌐 Site internet</td><td>halldulivre.com</td></tr>
+    <tr><td class="fiche-key">📚 Ce qu'on y trouve</td><td>Un très grand choix de livres sur plusieurs étages : romans, BD, mangas, livres scolaires, presse, papeterie…</td></tr>
+    <tr><td class="fiche-key">🛎️ Les services</td><td>Retrait en magasin, livraison le jour même, commande par téléphone ou en ligne, animations (rencontres d'auteurs, ateliers d'écriture, clubs de lecture).</td></tr>
+    <tr><td class="fiche-key">💬 Canaux de contact</td><td>Magasin, téléphone, site internet, réseaux sociaux : on dit que la relation client est « omnicanale ».</td></tr>
+  </table>
+
+</section>
+  <section class="pole-section" id="pole1">
+    <div class="bandeau bandeau-or">PÔLE 1</div>
+    <h1>Intégrer la relation client dans un cadre omnicanal</h1>
+    <p class="accroche">Un client entre en contact avec la librairie : à toi de l'accueillir, de comprendre ce qu'il veut, puis de lui proposer la bonne solution !</p><table class="tbl tbl-fiche"><tr><th colspan="2" class="fiche-head">👤 Ton client pour tout le Pôle 1</th></tr><tr><td class="fiche-key">Nom du client</td><td>Camille PETIT</td></tr><tr><td class="fiche-key">Sa demande</td><td>Elle veut offrir un livre à son neveu Léo, 10 ans, qui aime les dragons et les bandes dessinées.</td></tr><tr><td class="fiche-key">Budget maximum</td><td>20 €</td></tr><tr><td class="fiche-key">Délai</td><td>Elle a besoin du livre pour vendredi : c'est l'anniversaire de Léo dans 3 jours.</td></tr><tr><td class="fiche-key">Canal de contact</td><td>Elle appelle la librairie au téléphone, un mardi matin.</td></tr></table>
+  <div class="mission-card" id="p1m1">
+    <div class="bandeau bandeau-bleu">🎬 Mission 1 — Allô, ici Le Hall du Livre ! 📞</div>
+    <p class="competence">Compétence travaillée : Prendre contact</p>
+    <p class="duree">⏱ Durée indicative : <strong>1 à 2 heures</strong></p>
+    <h3>📖 La situation</h3>
+    <p>Mardi matin, 10h. Le téléphone sonne au Hall du Livre. C'est Camille Petit qui appelle (relis la fiche client ci-dessus si besoin).</p><p>Ta mission : réussir ce tout premier contact téléphonique, celui qui donne (ou pas) une bonne image de la librairie.</p>
+    <h3>🎯 Ce que tu dois réussir à faire</h3>
+    <ul><li>Adapter son accueil au canal téléphonique</li><li>Utiliser les bons réflexes de l'accueil (posture, sourire dans la voix, formules de politesse)</li><li>Recueillir les premières informations utiles</li></ul>
+    <div class="box box-ressource"><div class="box-title">🔎 Les bons réflexes de l'accueil téléphonique</div><p>👋 Le SBAM, c'est la base de tout bon accueil : Sourire, Bonjour, Au revoir, Merci. Au téléphone, un sourire s'entend dans la voix !</p><p>📞 Une bonne phrase d'accueil téléphonique contient toujours : le nom de la librairie, une salutation, ton prénom, et une proposition d'aide.</p><p>💡 Exemple (à ne pas recopier tel quel, à toi d'écrire la tienne) : « Librairie Le Hall du Livre, bonjour, [prénom] à votre écoute, comment puis-je vous aider ? »</p></div>
+    <div class="box box-annexe"><div class="box-title box-title-or">✍️ Annexe 1 — Ma fiche de premier contact</div><p>1. Rédige ta phrase d'accueil téléphonique pour répondre à l'appel de Camille :</p><textarea class="field" data-field="p1m1-accueil" rows="3" placeholder="Écris ta réponse ici…"></textarea><p>2. Quelles informations vas-tu confirmer ou recueillir dès ce premier contact ?</p><textarea class="field" data-field="p1m1-infos" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="box box-criteres"><div class="box-title box-title-vert">✅ Ta réponse doit obligatoirement comporter :</div><ul><li>Le nom de la librairie et une formule de politesse (bonjour / merci)</li><li>Ton prénom et une proposition d'aide</li><li>Au moins 2 informations à recueillir auprès de Camille (nom, motif de l'appel…)</li></ul></div></div>
+    
+  <div class="bandeau bandeau-vert">⭐ AUTO-ÉVALUATION — Mission terminée, fais le point !</div>
+  <div class="eval-block"><div class="eval-row">
+    <div class="eval-label">Je sais adapter une formule d'accueil au téléphone</div>
+    <div class="eval-choices">
+      <label class="chip"><input type="radio" name="p1m1-eval1" value="assure" data-field="p1m1-eval1"><span>😀 J'assure !</span></label><label class="chip"><input type="radio" name="p1m1-eval1" value="progresse" data-field="p1m1-eval1"><span>🙂 Ça va, je progresse</span></label><label class="chip"><input type="radio" name="p1m1-eval1" value="aide" data-field="p1m1-eval1"><span>😕 J'ai besoin d'aide</span></label>
+    </div>
+  </div><div class="eval-row">
+    <div class="eval-label">Je sais utiliser une formule d'accueil professionnelle et polie</div>
+    <div class="eval-choices">
+      <label class="chip"><input type="radio" name="p1m1-eval2" value="assure" data-field="p1m1-eval2"><span>😀 J'assure !</span></label><label class="chip"><input type="radio" name="p1m1-eval2" value="progresse" data-field="p1m1-eval2"><span>🙂 Ça va, je progresse</span></label><label class="chip"><input type="radio" name="p1m1-eval2" value="aide" data-field="p1m1-eval2"><span>😕 J'ai besoin d'aide</span></label>
+    </div>
+  </div><div class="eval-row">
+    <div class="eval-label">Je sais quelles informations recueillir dès le premier contact</div>
+    <div class="eval-choices">
+      <label class="chip"><input type="radio" name="p1m1-eval3" value="assure" data-field="p1m1-eval3"><span>😀 J'assure !</span></label><label class="chip"><input type="radio" name="p1m1-eval3" value="progresse" data-field="p1m1-eval3"><span>🙂 Ça va, je progresse</span></label><label class="chip"><input type="radio" name="p1m1-eval3" value="aide" data-field="p1m1-eval3"><span>😕 J'ai besoin d'aide</span></label>
+    </div>
+  </div></div>
+  <p class="italic small">Ce que je retiens de cette mission, en une phrase :</p>
+  <textarea class="field" data-field="p1m1-retiens" rows="2" placeholder="Ma phrase de synthèse…"></textarea>
+  </div>
+  <div class="mission-card" id="p1m2">
+    <div class="bandeau bandeau-bleu">🕵️ Mission 2 — Mène l'enquête ! 🕵️</div>
+    <p class="competence">Compétence travaillée : Identifier le besoin</p>
+    <p class="duree">⏱ Durée indicative : <strong>2 heures</strong></p>
+    <h3>📖 La situation</h3>
+    <p>Camille commence à expliquer sa demande, mais reste assez vague au début : « Je cherche un cadeau pour mon neveu… ». C'est à toi de creuser pour bien comprendre ce qu'elle attend vraiment.</p>
+    <h3>🎯 Ce que tu dois réussir à faire</h3>
+    <ul><li>Poser des questions ouvertes et fermées pour bien comprendre la demande</li><li>Pratiquer l'écoute active (reformuler, ne pas couper la parole)</li><li>Compléter une fiche découverte client claire et complète</li></ul>
+    <div class="box box-ressource"><div class="box-title">🔎 Bien questionner et bien écouter</div><p>❓ Question fermée = réponse courte (oui/non/un mot). Exemple : « Avez-vous déjà un titre en tête ? »</p><p>❓ Question ouverte = réponse développée. Exemple : « Quel type d'histoires votre neveu aime-t-il lire ? »</p><p>👂 L'écoute active, c'est reformuler ce que dit le client pour vérifier qu'on a bien compris : « Si je comprends bien, vous cherchez… c'est bien cela ? »</p><p>📝 Une bonne fiche découverte répond à 4 questions : Qui (le destinataire) ? Quoi (le type d'ouvrage) ? Combien (le budget) ? Quand (le délai) ?</p></div>
+    <div class="box box-annexe"><div class="box-title box-title-or">✍️ Annexe 2 — Ma grille de questions et ma fiche découverte</div><p>1. Écris 2 questions fermées et 2 questions ouvertes que tu pourrais poser à Camille pour affiner sa demande :</p><p>Question fermée 1 :</p><input type="text" class="field field-inline" data-field="p1m2-qf1" placeholder="…"><p>Question fermée 2 :</p><input type="text" class="field field-inline" data-field="p1m2-qf2" placeholder="…"><p>Question ouverte 1 :</p><input type="text" class="field field-inline" data-field="p1m2-qo1" placeholder="…"><p>Question ouverte 2 :</p><input type="text" class="field field-inline" data-field="p1m2-qo2" placeholder="…"><p>2. Complète la fiche découverte de Camille à partir de la fiche client de ce pôle :</p><table class="tbl tbl-saisie"><tr><th>Qui (destinataire)</th><th>Quoi (type d'ouvrage)</th><th>Combien (budget)</th><th>Quand (délai)</th></tr><tr><td><input type="text" class="field field-inline" data-field="p1m2-qui" placeholder="…"></td><td><input type="text" class="field field-inline" data-field="p1m2-quoi" placeholder="…"></td><td><input type="text" class="field field-inline" data-field="p1m2-combien" placeholder="…"></td><td><input type="text" class="field field-inline" data-field="p1m2-quand" placeholder="…"></td></tr></table><p>3. Reformule en une phrase la demande de Camille, comme tu le ferais à voix haute au téléphone :</p><textarea class="field" data-field="p1m2-reformulation" rows="2" placeholder="Écris ta réponse ici…"></textarea><div class="box box-criteres"><div class="box-title box-title-vert">✅ Ta réponse doit obligatoirement comporter :</div><ul><li>2 questions fermées et 2 questions ouvertes, en lien avec la demande de Camille</li><li>La fiche découverte complète et exacte (Qui / Quoi / Combien / Quand)</li><li>Une reformulation reprenant le neveu, les dragons/BD, le budget de 20 € et le délai de vendredi</li></ul></div></div>
+    
+  <div class="bandeau bandeau-vert">⭐ AUTO-ÉVALUATION — Mission terminée, fais le point !</div>
+  <div class="eval-block"><div class="eval-row">
+    <div class="eval-label">Je sais faire la différence entre question ouverte et question fermée</div>
+    <div class="eval-choices">
+      <label class="chip"><input type="radio" name="p1m2-eval1" value="assure" data-field="p1m2-eval1"><span>😀 J'assure !</span></label><label class="chip"><input type="radio" name="p1m2-eval1" value="progresse" data-field="p1m2-eval1"><span>🙂 Ça va, je progresse</span></label><label class="chip"><input type="radio" name="p1m2-eval1" value="aide" data-field="p1m2-eval1"><span>😕 J'ai besoin d'aide</span></label>
+    </div>
+  </div><div class="eval-row">
+    <div class="eval-label">Je sais reformuler la demande d'un client</div>
+    <div class="eval-choices">
+      <label class="chip"><input type="radio" name="p1m2-eval2" value="assure" data-field="p1m2-eval2"><span>😀 J'assure !</span></label><label class="chip"><input type="radio" name="p1m2-eval2" value="progresse" data-field="p1m2-eval2"><span>🙂 Ça va, je progresse</span></label><label class="chip"><input type="radio" name="p1m2-eval2" value="aide" data-field="p1m2-eval2"><span>😕 J'ai besoin d'aide</span></label>
+    </div>
+  </div><div class="eval-row">
+    <div class="eval-label">Je sais compléter une fiche découverte complète</div>
+    <div class="eval-choices">
+      <label class="chip"><input type="radio" name="p1m2-eval3" value="assure" data-field="p1m2-eval3"><span>😀 J'assure !</span></label><label class="chip"><input type="radio" name="p1m2-eval3" value="progresse" data-field="p1m2-eval3"><span>🙂 Ça va, je progresse</span></label><label class="chip"><input type="radio" name="p1m2-eval3" value="aide" data-field="p1m2-eval3"><span>😕 J'ai besoin d'aide</span></label>
+    </div>
+  </div></div>
+  <p class="italic small">Ce que je retiens de cette mission, en une phrase :</p>
+  <textarea class="field" data-field="p1m2-retiens" rows="2" placeholder="Ma phrase de synthèse…"></textarea>
+  </div>
+  <div class="mission-card" id="p1m3">
+    <div class="bandeau bandeau-bleu">💎 Mission 3 — Trouve la pépite parfaite ! 💎</div>
+    <p class="competence">Compétence travaillée : Proposer une solution adaptée</p>
+    <p class="duree">⏱ Durée indicative : <strong>2 à 3 heures</strong></p>
+    <h3>📖 La situation</h3>
+    <p>Tu connais maintenant précisément ce que veut Camille. Tu consultes le catalogue disponible à la librairie pour trouver le livre qui correspond le mieux à sa demande.</p>
+    <h3>🎯 Ce que tu dois réussir à faire</h3>
+    <ul><li>Choisir la proposition la plus adaptée à la demande de Camille</li><li>Construire un argumentaire avec la méthode CAP</li><li>Proposer une modalité de retrait cohérente avec le délai du client</li></ul>
+    <div class="box box-ressource"><div class="box-title">🔎 Le catalogue disponible et la méthode CAP</div><p>📚 Voici les 3 ouvrages que tu peux proposer à Camille :</p><table class="tbl tbl-donnees"><tr><th>Réf.</th><th>Titre</th><th>Type</th><th>Prix</th><th>Disponibilité</th></tr><tr><td>1</td><td>Le Souffle du Dragon</td><td>Bande dessinée jeunesse</td><td>12,90 €</td><td>En stock au magasin</td></tr><tr><td>2</td><td>Dragons &amp; Chevaliers, tome 1</td><td>Roman jeunesse dès 8 ans</td><td>14,50 €</td><td>Disponible sous 5 jours (commande fournisseur)</td></tr><tr><td>3</td><td>Contes et Légendes de Dragons</td><td>Livre illustré</td><td>18,50 €</td><td>En stock au magasin</td></tr></table><p>🎯 La méthode CAP structure un bon argument de vente :</p><ul><li>C — Caractéristique : une info concrète sur le produit</li><li>A — Avantage : ce que ça apporte au client</li><li>P — Preuve : un élément qui rassure</li></ul></div>
+    <div class="box box-annexe"><div class="box-title box-title-or">✍️ Annexe 3 — Mon argumentaire CAP</div><p>1. Quelle référence du catalogue proposes-tu à Camille ? Justifie ton choix en t'appuyant sur le budget, le délai ET les goûts de Léo :</p><textarea class="field" data-field="p1m3-choix" rows="3" placeholder="Écris ta réponse ici…"></textarea><p>2. Construis ton argumentaire CAP pour cette référence :</p><table class="tbl tbl-saisie"><tr><th>Caractéristique</th><th>Avantage</th><th>Preuve</th></tr><tr><td><input type="text" class="field field-inline" data-field="p1m3-cap-c" placeholder="…"></td><td><input type="text" class="field field-inline" data-field="p1m3-cap-a" placeholder="…"></td><td><input type="text" class="field field-inline" data-field="p1m3-cap-p" placeholder="…"></td></tr></table><p>3. Quelle solution de retrait proposes-tu à Camille, et pourquoi ?</p><textarea class="field" data-field="p1m3-retrait" rows="2" placeholder="Écris ta réponse ici…"></textarea><p>4. Camille hésite un peu (« c'est un peu cher pour un cadeau… »). Comment lui réponds-tu ?</p><textarea class="field" data-field="p1m3-objection" rows="2" placeholder="Écris ta réponse ici…"></textarea><div class="box box-criteres"><div class="box-title box-title-vert">✅ Ta réponse doit obligatoirement comporter :</div><ul><li>Le choix de la référence 1 (seule référence en stock, dans le budget ET correspondant aux goûts BD/dragons de Léo)</li><li>Une justification qui croise les 3 critères : budget, délai, goûts</li><li>Un argumentaire C-A-P complet et cohérent avec la référence choisie</li><li>La proposition d'un retrait en magasin (compatible avec le délai de vendredi)</li></ul></div></div>
+    
+  <div class="bandeau bandeau-vert">⭐ AUTO-ÉVALUATION — Mission terminée, fais le point !</div>
+  <div class="eval-block"><div class="eval-row">
+    <div class="eval-label">Je sais choisir une solution adaptée à partir de plusieurs critères</div>
+    <div class="eval-choices">
+      <label class="chip"><input type="radio" name="p1m3-eval1" value="assure" data-field="p1m3-eval1"><span>😀 J'assure !</span></label><label class="chip"><input type="radio" name="p1m3-eval1" value="progresse" data-field="p1m3-eval1"><span>🙂 Ça va, je progresse</span></label><label class="chip"><input type="radio" name="p1m3-eval1" value="aide" data-field="p1m3-eval1"><span>😕 J'ai besoin d'aide</span></label>
+    </div>
+  </div><div class="eval-row">
+    <div class="eval-label">Je sais construire un argument avec la méthode CAP</div>
+    <div class="eval-choices">
+      <label class="chip"><input type="radio" name="p1m3-eval2" value="assure" data-field="p1m3-eval2"><span>😀 J'assure !</span></label><label class="chip"><input type="radio" name="p1m3-eval2" value="progresse" data-field="p1m3-eval2"><span>🙂 Ça va, je progresse</span></label><label class="chip"><input type="radio" name="p1m3-eval2" value="aide" data-field="p1m3-eval2"><span>😕 J'ai besoin d'aide</span></label>
+    </div>
+  </div><div class="eval-row">
+    <div class="eval-label">Je sais répondre calmement à une objection simple</div>
+    <div class="eval-choices">
+      <label class="chip"><input type="radio" name="p1m3-eval3" value="assure" data-field="p1m3-eval3"><span>😀 J'assure !</span></label><label class="chip"><input type="radio" name="p1m3-eval3" value="progresse" data-field="p1m3-eval3"><span>🙂 Ça va, je progresse</span></label><label class="chip"><input type="radio" name="p1m3-eval3" value="aide" data-field="p1m3-eval3"><span>😕 J'ai besoin d'aide</span></label>
+    </div>
+  </div></div>
+  <p class="italic small">Ce que je retiens de cette mission, en une phrase :</p>
+  <textarea class="field" data-field="p1m3-retiens" rows="2" placeholder="Ma phrase de synthèse…"></textarea>
+  </div></section>
+  <section class="pole-section" id="pole2">
+    <div class="bandeau bandeau-or">PÔLE 2</div>
+    <h1>Assurer le suivi de la demande</h1>
+    <p class="accroche">Un client a déjà passé commande : il faut le suivre jusqu'au bout… et lui donner envie de revenir !</p><table class="tbl tbl-fiche"><tr><th colspan="2" class="fiche-head">👤 Ton client pour tout le Pôle 2</th></tr><tr><td class="fiche-key">Nom du client</td><td>Julien MARCHAL</td></tr><tr><td class="fiche-key">Sa commande</td><td>Il a commandé sur le site internet « L'Atlas Illustré des Océans » (28,90 €) pour son fils Tom, 12 ans, en 5ème.</td></tr><tr><td class="fiche-key">Motif</td><td>Tom doit rendre un exposé sur les océans vendredi ; il a besoin du livre pour préparer son travail.</td></tr><tr><td class="fiche-key">Retrait promis</td><td>Jeudi, en fin de journée, au magasin.</td></tr></table><p class="italic">Julien et Tom sont des personnages inventés pour t'entraîner sur ce pôle : ce sont des exemples fictifs, indépendants de ceux du Pôle 1.</p>
+  <div class="mission-card" id="p2m1">
+    <div class="bandeau bandeau-bleu">🚑 Mission 1 — Sauve la commande ! 🚑</div>
+    <p class="competence">Compétence travaillée : Satisfaire</p>
+    <p class="duree">⏱ Durée indicative : <strong>2 à 3 heures</strong></p>
+    <h3>📖 La situation</h3>
+    <p>Jeudi, 17h30. Julien Marchal se présente au magasin pour récupérer « L'Atlas Illustré des Océans ». Problème : le fournisseur a du retard, l'ouvrage n'est pas arrivé. Le prochain réassort n'est prévu que lundi, après la date limite de l'exposé de Tom.</p>
+    <h3>🎯 Ce que tu dois réussir à faire</h3>
+    <ul><li>Identifier précisément la contrainte du client qui n'est plus respectée</li><li>Traiter cette réclamation avec méthode</li><li>Créer un questionnaire de satisfaction</li></ul>
+    <div class="box box-ressource"><div class="box-title">🔎 Gérer une réclamation en 4 étapes + un catalogue de secours</div><p>😤 Un imprévu n'est pas une catastrophe : c'est l'occasion de montrer ton professionnalisme. Méthode en 4 étapes :</p><ul><li>1. ÉCOUTER — laisser le client s'exprimer entièrement, sans l'interrompre</li><li>2. RECONNAÎTRE — montrer que tu comprends la gêne occasionnée</li><li>3. RÉSOUDRE — proposer une solution concrète, à partir du catalogue de secours ci-dessous</li><li>4. VÉRIFIER — s'assurer que la solution convient bien au client avant de terminer l'échange</li></ul><p>📚 Catalogue de secours disponible en magasin :</p><table class="tbl tbl-donnees"><tr><th>Titre</th><th>Public visé</th><th>Prix</th><th>Disponibilité</th></tr><tr><td>Le Monde sous les Vagues</td><td>Documentaire jeunesse (6-8 ans)</td><td>19,90 €</td><td>En stock</td></tr><tr><td>Atlas Marin Junior</td><td>Documentaire (11-14 ans)</td><td>26,50 €</td><td>En stock</td></tr><tr><td>Grande Encyclopédie des Océans</td><td>Documentaire (à partir de 15 ans)</td><td>45,00 €</td><td>Disponible sous 6 jours</td></tr></table><p>📋 Un questionnaire de satisfaction efficace est court (3 à 5 questions) et mélange questions fermées (note de 1 à 5) et une question ouverte finale.</p></div>
+    <div class="box box-annexe"><div class="box-title box-title-or">✍️ Annexe 4 — Ma fiche réclamation et mon questionnaire</div><p>1. Quelle contrainte de Julien (fixée dans sa fiche client) n'est plus respectée à cause de cet imprévu ?</p><input type="text" class="field field-inline" data-field="p2m1-contrainte" placeholder="…"><p>2. Rédige ta réponse à Julien en suivant les 4 étapes de la méthode. Choisis dans le catalogue de secours l'ouvrage le plus adapté à l'âge de Tom (12 ans, 5ème), en stock :</p><p>Écouter / reconnaître :</p><textarea class="field" data-field="p2m1-ecouter" rows="2" placeholder="Écris ta réponse ici…"></textarea><p>Solution proposée :</p><textarea class="field" data-field="p2m1-solution" rows="2" placeholder="Écris ta réponse ici…"></textarea><p>Vérification finale :</p><textarea class="field" data-field="p2m1-verif" rows="2" placeholder="Écris ta réponse ici…"></textarea><p>3. Rédige un questionnaire de satisfaction de 4 questions (3 fermées avec note, 1 ouverte) :</p><p>Question 1 :</p><input type="text" class="field field-inline" data-field="p2m1-q1" placeholder="…"><p>Question 2 :</p><input type="text" class="field field-inline" data-field="p2m1-q2" placeholder="…"><p>Question 3 :</p><input type="text" class="field field-inline" data-field="p2m1-q3" placeholder="…"><p>Question 4 (ouverte) :</p><input type="text" class="field field-inline" data-field="p2m1-q4" placeholder="…"><div class="box box-criteres"><div class="box-title box-title-vert">✅ Ta réponse doit obligatoirement comporter :</div><ul><li>L'identification du délai (vendredi, date de l'exposé) comme contrainte non respectée</li><li>Les 4 étapes de la méthode, dans l'ordre</li><li>Le choix de « Atlas Marin Junior » (seul ouvrage en stock adapté à un élève de 5ème, 12 ans)</li><li>Un questionnaire avec 3 questions fermées notées et 1 question ouverte</li></ul></div></div>
+    
+  <div class="bandeau bandeau-vert">⭐ AUTO-ÉVALUATION — Mission terminée, fais le point !</div>
+  <div class="eval-block"><div class="eval-row">
+    <div class="eval-label">Je sais suivre une méthode pour traiter une réclamation</div>
+    <div class="eval-choices">
+      <label class="chip"><input type="radio" name="p2m1-eval1" value="assure" data-field="p2m1-eval1"><span>😀 J'assure !</span></label><label class="chip"><input type="radio" name="p2m1-eval1" value="progresse" data-field="p2m1-eval1"><span>🙂 Ça va, je progresse</span></label><label class="chip"><input type="radio" name="p2m1-eval1" value="aide" data-field="p2m1-eval1"><span>😕 J'ai besoin d'aide</span></label>
+    </div>
+  </div><div class="eval-row">
+    <div class="eval-label">Je sais proposer une solution de remplacement cohérente</div>
+    <div class="eval-choices">
+      <label class="chip"><input type="radio" name="p2m1-eval2" value="assure" data-field="p2m1-eval2"><span>😀 J'assure !</span></label><label class="chip"><input type="radio" name="p2m1-eval2" value="progresse" data-field="p2m1-eval2"><span>🙂 Ça va, je progresse</span></label><label class="chip"><input type="radio" name="p2m1-eval2" value="aide" data-field="p2m1-eval2"><span>😕 J'ai besoin d'aide</span></label>
+    </div>
+  </div><div class="eval-row">
+    <div class="eval-label">Je sais construire un questionnaire de satisfaction simple</div>
+    <div class="eval-choices">
+      <label class="chip"><input type="radio" name="p2m1-eval3" value="assure" data-field="p2m1-eval3"><span>😀 J'assure !</span></label><label class="chip"><input type="radio" name="p2m1-eval3" value="progresse" data-field="p2m1-eval3"><span>🙂 Ça va, je progresse</span></label><label class="chip"><input type="radio" name="p2m1-eval3" value="aide" data-field="p2m1-eval3"><span>😕 J'ai besoin d'aide</span></label>
+    </div>
+  </div></div>
+  <p class="italic small">Ce que je retiens de cette mission, en une phrase :</p>
+  <textarea class="field" data-field="p2m1-retiens" rows="2" placeholder="Ma phrase de synthèse…"></textarea>
+  </div>
+  <div class="mission-card" id="p2m2">
+    <div class="bandeau bandeau-bleu">🎉 Mission 2 — Crée des fans du Hall du Livre ! 🎉</div>
+    <p class="competence">Compétence travaillée : Fidéliser</p>
+    <p class="duree">⏱ Durée indicative : <strong>2 heures</strong></p>
+    <h3>📖 La situation</h3>
+    <p>Julien repart satisfait avec « Atlas Marin Junior » pour Tom. Objectif suivant : lui donner envie de revenir au Hall du Livre !</p>
+    <h3>🎯 Ce que tu dois réussir à faire</h3>
+    <ul><li>Comprendre pourquoi il est important de fidéliser un client</li><li>Choisir une action de fidélisation adaptée à Julien et Tom</li><li>Créer un support de communication pour cette action</li></ul>
+    <div class="box box-ressource"><div class="box-title">🔎 Les actions de fidélisation du Hall du Livre</div><p>💰 Fidéliser coûte souvent moins cher à une entreprise que de trouver un nouveau client. Un client fidèle achète plus régulièrement et en parle autour de lui.</p><p>🎤 Le Hall du Livre propose régulièrement 3 types d'animations : des rencontres d'auteurs, des ateliers d'écriture, et des clubs de lecture.</p><p>🎁 Il propose aussi des outils classiques de fidélisation : carte de fidélité, newsletter avec les nouveautés, invitations aux événements.</p></div>
+    <div class="box box-annexe"><div class="box-title box-title-or">✍️ Annexe 5 — Mon action de fidélisation</div><p>1. Parmi les 3 animations proposées par la librairie (rencontre d'auteur, atelier d'écriture, club de lecture), laquelle choisis-tu pour fidéliser Julien et/ou Tom ? Justifie ton choix en t'appuyant sur leur profil :</p><textarea class="field" data-field="p2m2-choix" rows="3" placeholder="Écris ta réponse ici…"></textarea><p>2. Rédige le message que tu enverrais à Julien pour lui proposer cette action (mail, SMS ou message réseau social) :</p><textarea class="field" data-field="p2m2-message" rows="4" placeholder="Écris ta réponse ici…"></textarea><div class="box box-criteres"><div class="box-title box-title-vert">✅ Ta réponse doit obligatoirement comporter :</div><ul><li>Le choix d'une des 3 animations existantes, explicitement nommée</li><li>Une justification reliant le choix au profil de Julien et/ou de Tom (collégien, intérêt pour les sciences/lecture documentaire)</li><li>Un message rédigé avec formule de politesse, information claire (quoi/quand) et une invitation à participer</li></ul></div></div>
+    
+  <div class="bandeau bandeau-vert">⭐ AUTO-ÉVALUATION — Mission terminée, fais le point !</div>
+  <div class="eval-block"><div class="eval-row">
+    <div class="eval-label">Je sais expliquer l'intérêt de fidéliser un client</div>
+    <div class="eval-choices">
+      <label class="chip"><input type="radio" name="p2m2-eval1" value="assure" data-field="p2m2-eval1"><span>😀 J'assure !</span></label><label class="chip"><input type="radio" name="p2m2-eval1" value="progresse" data-field="p2m2-eval1"><span>🙂 Ça va, je progresse</span></label><label class="chip"><input type="radio" name="p2m2-eval1" value="aide" data-field="p2m2-eval1"><span>😕 J'ai besoin d'aide</span></label>
+    </div>
+  </div><div class="eval-row">
+    <div class="eval-label">Je sais choisir une action de fidélisation cohérente avec l'enseigne et le client</div>
+    <div class="eval-choices">
+      <label class="chip"><input type="radio" name="p2m2-eval2" value="assure" data-field="p2m2-eval2"><span>😀 J'assure !</span></label><label class="chip"><input type="radio" name="p2m2-eval2" value="progresse" data-field="p2m2-eval2"><span>🙂 Ça va, je progresse</span></label><label class="chip"><input type="radio" name="p2m2-eval2" value="aide" data-field="p2m2-eval2"><span>😕 J'ai besoin d'aide</span></label>
+    </div>
+  </div><div class="eval-row">
+    <div class="eval-label">Je sais rédiger un message de fidélisation clair et engageant</div>
+    <div class="eval-choices">
+      <label class="chip"><input type="radio" name="p2m2-eval3" value="assure" data-field="p2m2-eval3"><span>😀 J'assure !</span></label><label class="chip"><input type="radio" name="p2m2-eval3" value="progresse" data-field="p2m2-eval3"><span>🙂 Ça va, je progresse</span></label><label class="chip"><input type="radio" name="p2m2-eval3" value="aide" data-field="p2m2-eval3"><span>😕 J'ai besoin d'aide</span></label>
+    </div>
+  </div></div>
+  <p class="italic small">Ce que je retiens de cette mission, en une phrase :</p>
+  <textarea class="field" data-field="p2m2-retiens" rows="2" placeholder="Ma phrase de synthèse…"></textarea>
+  </div></section>
+  <section class="pole-section" id="pole3">
+    <div class="bandeau bandeau-or">PÔLE 3</div>
+    <h1>Collecter, traiter et exploiter l'information</h1>
+    <p class="accroche">Chaque échange avec un client laisse une trace : à toi de savoir l'organiser, l'analyser… puis la partager aux bonnes personnes !</p><table class="tbl tbl-fiche"><tr><th colspan="2" class="fiche-head">👤 Ta situation pour tout le Pôle 3</th></tr><tr><td class="fiche-key">Contexte</td><td>Ton responsable te demande de faire un point sur les 5 derniers clients accueillis cette semaine par la librairie.</td></tr><tr><td class="fiche-key">Ta mission générale</td><td>Analyser ces données, puis les transmettre aux bonnes personnes.</td></tr></table><p class="italic">Les 5 clients de ce tableau sont indépendants de ceux rencontrés dans les autres pôles.</p>
+  <div class="mission-card" id="p3m1">
+    <div class="bandeau bandeau-bleu">📊 Mission 1 — Chasseur·euse de données ! 🕵️‍♀️</div>
+    <p class="competence">Compétence travaillée : Traiter et exploiter l'information</p>
+    <p class="duree">⏱ Durée indicative : <strong>2 à 3 heures</strong></p>
+    <h3>📖 La situation</h3>
+    <p>Voici les données collectées cette semaine sur les 5 derniers clients accueillis par Le Hall du Livre.</p>
+    <h3>🎯 Ce que tu dois réussir à faire</h3>
+    <ul><li>Comprendre pourquoi les données clients doivent être protégées (RGPD)</li><li>Lire et exploiter un tableau de données</li><li>Calculer des indicateurs simples à partir de données</li></ul>
+    <div class="box box-ressource"><div class="box-title">🔎 Le tableau de la semaine et le RGPD</div><p>🔐 Le RGPD est une loi européenne qui protège les données personnelles. Une entreprise doit les utiliser seulement pour ce qui a été annoncé au client, les sécuriser, et un client peut demander à tout moment à voir ou supprimer ses données.</p><p>📋 Voici les données des 5 derniers clients accueillis cette semaine par Le Hall du Livre :</p><table class="tbl tbl-donnees"><tr><th>Client</th><th>Canal utilisé</th><th>Type de demande</th><th>Note de satisfaction (/5)</th></tr><tr><td>M. Dubois</td><td>Magasin</td><td>Recherche livre scolaire</td><td>4</td></tr><tr><td>Mme Leroy</td><td>Téléphone</td><td>Commande cadeau</td><td>5</td></tr><tr><td>Mme Bertrand</td><td>Téléphone</td><td>Recherche BD</td><td>3</td></tr><tr><td>M. Faivre</td><td>Site internet</td><td>Commande groupée association</td><td>4</td></tr><tr><td>Mme Girard</td><td>Réseaux sociaux</td><td>Demande d'information sur une animation</td><td>4</td></tr></table><p>🧮 Pour calculer une moyenne : additionne toutes les notes, puis divise par le nombre de notes.</p></div>
+    <div class="box box-annexe"><div class="box-title box-title-or">✍️ Annexe 6 — Mon analyse du tableau de la semaine</div><p>1. Cite une règle du RGPD que la librairie doit respecter avec les données de ces 5 clients :</p><textarea class="field" data-field="p3m1-rgpd" rows="2" placeholder="Écris ta réponse ici…"></textarea><p>2. Calcule la note moyenne de satisfaction des 5 clients. Montre ton calcul :</p><textarea class="field" data-field="p3m1-calcul" rows="2" placeholder="Écris ta réponse ici…"></textarea><p>3. Quel est le canal de contact le plus utilisé par ces 5 clients ?</p><input type="text" class="field field-inline" data-field="p3m1-canal" placeholder="…"><p>4. Mme Bertrand a mis une note plus basse (3/5) que les autres. Propose 2 raisons possibles pour expliquer cette note (il n'y a pas de bonne ou de mauvaise réponse : seule la cohérence de ton hypothèse compte) :</p><textarea class="field" data-field="p3m1-hypotheses" rows="3" placeholder="Écris ta réponse ici…"></textarea><div class="box box-criteres"><div class="box-title box-title-vert">✅ Ta réponse doit obligatoirement comporter :</div><ul><li>Une règle du RGPD correctement citée (parmi celles données dans la ressource)</li><li>Le calcul exact : (4+5+3+4+4) ÷ 5 = 4/5, avec le calcul apparent</li><li>La réponse « téléphone » (utilisé 2 fois sur 5)</li><li>2 hypothèses cohérentes et réalistes pour expliquer la note de Mme Bertrand</li></ul></div></div>
+    
+  <div class="bandeau bandeau-vert">⭐ AUTO-ÉVALUATION — Mission terminée, fais le point !</div>
+  <div class="eval-block"><div class="eval-row">
+    <div class="eval-label">Je sais citer une règle de protection des données clients</div>
+    <div class="eval-choices">
+      <label class="chip"><input type="radio" name="p3m1-eval1" value="assure" data-field="p3m1-eval1"><span>😀 J'assure !</span></label><label class="chip"><input type="radio" name="p3m1-eval1" value="progresse" data-field="p3m1-eval1"><span>🙂 Ça va, je progresse</span></label><label class="chip"><input type="radio" name="p3m1-eval1" value="aide" data-field="p3m1-eval1"><span>😕 J'ai besoin d'aide</span></label>
+    </div>
+  </div><div class="eval-row">
+    <div class="eval-label">Je sais lire et exploiter un tableau de données</div>
+    <div class="eval-choices">
+      <label class="chip"><input type="radio" name="p3m1-eval2" value="assure" data-field="p3m1-eval2"><span>😀 J'assure !</span></label><label class="chip"><input type="radio" name="p3m1-eval2" value="progresse" data-field="p3m1-eval2"><span>🙂 Ça va, je progresse</span></label><label class="chip"><input type="radio" name="p3m1-eval2" value="aide" data-field="p3m1-eval2"><span>😕 J'ai besoin d'aide</span></label>
+    </div>
+  </div><div class="eval-row">
+    <div class="eval-label">Je sais calculer une moyenne simple</div>
+    <div class="eval-choices">
+      <label class="chip"><input type="radio" name="p3m1-eval3" value="assure" data-field="p3m1-eval3"><span>😀 J'assure !</span></label><label class="chip"><input type="radio" name="p3m1-eval3" value="progresse" data-field="p3m1-eval3"><span>🙂 Ça va, je progresse</span></label><label class="chip"><input type="radio" name="p3m1-eval3" value="aide" data-field="p3m1-eval3"><span>😕 J'ai besoin d'aide</span></label>
+    </div>
+  </div></div>
+  <p class="italic small">Ce que je retiens de cette mission, en une phrase :</p>
+  <textarea class="field" data-field="p3m1-retiens" rows="2" placeholder="Ma phrase de synthèse…"></textarea>
+  </div>
+  <div class="mission-card" id="p3m2">
+    <div class="bandeau bandeau-bleu">📣 Mission 2 — Fais le buzz (avec classe) ! 📣</div>
+    <p class="competence">Compétence travaillée : Diffuser l'information</p>
+    <p class="duree">⏱ Durée indicative : <strong>2 heures</strong></p>
+    <h3>📖 La situation</h3>
+    <p>Ton analyse est prête. Il faut maintenant la transmettre : à ton responsable (en interne), et aux clients (en externe, sur les réseaux sociaux), pour annoncer le club de lecture ados du mercredi.</p>
+    <h3>🎯 Ce que tu dois réussir à faire</h3>
+    <ul><li>Choisir le bon support selon le destinataire du message</li><li>Rédiger un compte rendu clair pour un responsable</li><li>Rédiger une publication attractive pour les réseaux sociaux</li></ul>
+    <div class="box box-ressource"><div class="box-title">🔎 Le bon message, au bon endroit</div><p>🏢 En interne (ton responsable) : message factuel, structuré, avec les chiffres clés. On va à l'essentiel.</p><p>🌍 En externe (les clients, sur les réseaux) : message plus court, plus vivant, avec une accroche.</p><p>📅 Information de l'animation à annoncer : « Club de lecture ados — Mercredi 17h — Le Hall du Livre ».</p><p>✏️ Une bonne publication réseau social contient : une accroche, l'information utile (jour/heure), et un appel à l'action (« Inscrivez-vous… », « Venez nombreux… »).</p></div>
+    <div class="box box-annexe"><div class="box-title box-title-or">✍️ Annexe 7 — Mon compte rendu et ma publication</div><p>1. Rédige un compte rendu (5 à 8 lignes) pour ton responsable. Il doit obligatoirement reprendre la note moyenne de satisfaction et le canal le plus utilisé calculés en Mission 1 :</p><textarea class="field" data-field="p3m2-cr" rows="5" placeholder="Écris ta réponse ici…"></textarea><p>2. Rédige une publication pour les réseaux sociaux du Hall du Livre annonçant le club de lecture ados du mercredi :</p><textarea class="field" data-field="p3m2-publication" rows="3" placeholder="Écris ta réponse ici…"></textarea><p>3. Décris en une phrase le visuel qui accompagnerait ta publication :</p><textarea class="field" data-field="p3m2-visuel" rows="2" placeholder="Écris ta réponse ici…"></textarea><div class="box box-criteres"><div class="box-title box-title-vert">✅ Ta réponse doit obligatoirement comporter :</div><ul><li>La note moyenne (4/5) et le canal le plus utilisé (téléphone) mentionnés dans le compte rendu</li><li>Un compte rendu de 5 à 8 lignes, ton neutre et factuel</li><li>Une publication avec accroche + jour/heure + appel à l'action</li></ul></div></div>
+    
+  <div class="bandeau bandeau-vert">⭐ AUTO-ÉVALUATION — Mission terminée, fais le point !</div>
+  <div class="eval-block"><div class="eval-row">
+    <div class="eval-label">Je sais adapter mon message selon le destinataire</div>
+    <div class="eval-choices">
+      <label class="chip"><input type="radio" name="p3m2-eval1" value="assure" data-field="p3m2-eval1"><span>😀 J'assure !</span></label><label class="chip"><input type="radio" name="p3m2-eval1" value="progresse" data-field="p3m2-eval1"><span>🙂 Ça va, je progresse</span></label><label class="chip"><input type="radio" name="p3m2-eval1" value="aide" data-field="p3m2-eval1"><span>😕 J'ai besoin d'aide</span></label>
+    </div>
+  </div><div class="eval-row">
+    <div class="eval-label">Je sais rédiger un compte rendu clair</div>
+    <div class="eval-choices">
+      <label class="chip"><input type="radio" name="p3m2-eval2" value="assure" data-field="p3m2-eval2"><span>😀 J'assure !</span></label><label class="chip"><input type="radio" name="p3m2-eval2" value="progresse" data-field="p3m2-eval2"><span>🙂 Ça va, je progresse</span></label><label class="chip"><input type="radio" name="p3m2-eval2" value="aide" data-field="p3m2-eval2"><span>😕 J'ai besoin d'aide</span></label>
+    </div>
+  </div><div class="eval-row">
+    <div class="eval-label">Je sais rédiger une publication accrocheuse pour les réseaux sociaux</div>
+    <div class="eval-choices">
+      <label class="chip"><input type="radio" name="p3m2-eval3" value="assure" data-field="p3m2-eval3"><span>😀 J'assure !</span></label><label class="chip"><input type="radio" name="p3m2-eval3" value="progresse" data-field="p3m2-eval3"><span>🙂 Ça va, je progresse</span></label><label class="chip"><input type="radio" name="p3m2-eval3" value="aide" data-field="p3m2-eval3"><span>😕 J'ai besoin d'aide</span></label>
+    </div>
+  </div></div>
+  <p class="italic small">Ce que je retiens de cette mission, en une phrase :</p>
+  <textarea class="field" data-field="p3m2-retiens" rows="2" placeholder="Ma phrase de synthèse…"></textarea>
+  </div></section>
+<section class="pole-section" id="pole4">
+  <div class="bandeau bandeau-or">PÔLE 4</div>
+  <h1>Économie-Droit</h1>
+  <p class="accroche">Question au programme : Quelles relations les agents économiques entretiennent-ils entre eux ?</p><table class="tbl tbl-fiche"><tr><th colspan="2" class="fiche-head">👤 Ta situation pour le Pôle 4</th></tr><tr><td class="fiche-key">Contexte</td><td>Ce matin, Le Hall du Livre a vendu en magasin un roman à 15,90 € à une cliente, Inès.</td></tr></table>
+  <div class="mission-card" id="p4m1">
+    <div class="bandeau bandeau-bleu">💶 Mission unique — Le grand cercle des échanges 🔄</div>
+    <p class="competence">Compétence travaillée : Les agents économiques</p>
+    <p class="duree">⏱ Durée indicative : <strong>2 à 3 heures</strong></p>
+    <h3>📖 La situation</h3>
+    <p>En vendant ce roman à Inès, Le Hall du Livre a été en relation avec bien d'autres acteurs de l'économie. On appelle ces acteurs des « agents économiques ».</p>
+    <h3>🎯 Ce que tu dois réussir à faire</h3>
+    <ul><li>Identifier les principaux agents économiques et leur rôle</li><li>Distinguer un flux réel (ce qui circule physiquement) d'un flux monétaire (l'argent qui circule)</li><li>Compléter un schéma simple du circuit économique</li></ul>
+    <div class="box box-ressource"><div class="box-title">🔎 Comprendre les agents économiques</div><p>👥 Les ménages : les particuliers (comme Inès), qui consomment et travaillent.</p><p>🏭 Les entreprises : elles produisent des biens ou services (Le Hall du Livre, mais aussi les éditeurs et distributeurs de livres, fournisseurs de la librairie).</p><p>🏦 Les banques : elles gèrent l'argent, accordent des prêts, encaissent les paiements par carte.</p><p>🏛️ L'État et les collectivités : ils collectent les impôts et taxes (comme la TVA payée sur chaque livre vendu).</p><p>🔁 Un flux réel = ce qui circule « en vrai » (un livre livré). Un flux monétaire = l'argent qui circule en échange (le paiement).</p></div>
+    <div class="box box-annexe"><div class="box-title box-title-or">✍️ Annexe 8 — Mon schéma des agents économiques</div><p>Complète le tableau ci-dessous pour chacune des 4 relations du Hall du Livre avec d'autres agents économiques (dans l'ordre : Inès — Fournisseurs de livres — Banque — État et collectivités) :</p><table class="tbl tbl-saisie"><tr><th>Agent économique</th><th>Flux réel</th><th>Flux monétaire</th></tr><tr><td><input type="text" class="field field-inline" data-field="p4-agent1" placeholder="…"></td><td><input type="text" class="field field-inline" data-field="p4-fluxreel1" placeholder="…"></td><td><input type="text" class="field field-inline" data-field="p4-fluxmon1" placeholder="…"></td></tr><tr><td><input type="text" class="field field-inline" data-field="p4-agent2" placeholder="…"></td><td><input type="text" class="field field-inline" data-field="p4-fluxreel2" placeholder="…"></td><td><input type="text" class="field field-inline" data-field="p4-fluxmon2" placeholder="…"></td></tr><tr><td><input type="text" class="field field-inline" data-field="p4-agent3" placeholder="…"></td><td><input type="text" class="field field-inline" data-field="p4-fluxreel3" placeholder="…"></td><td><input type="text" class="field field-inline" data-field="p4-fluxmon3" placeholder="…"></td></tr><tr><td><input type="text" class="field field-inline" data-field="p4-agent4" placeholder="…"></td><td><input type="text" class="field field-inline" data-field="p4-fluxreel4" placeholder="…"></td><td><input type="text" class="field field-inline" data-field="p4-fluxmon4" placeholder="…"></td></tr></table><p>Décris (ou résume) le circuit économique en reliant Le Hall du Livre à ces 4 agents, en indiquant le sens de chaque flux :</p><textarea class="field" data-field="p4-schema" rows="4" placeholder="Écris ta réponse ici…"></textarea><div class="box box-criteres"><div class="box-title box-title-vert">✅ Ta réponse doit obligatoirement comporter :</div><ul><li>Ménage (Inès) : flux réel = le livre remis ; flux monétaire = le prix payé (15,90 €)</li><li>Fournisseur/éditeur : flux réel = livres livrés à la librairie ; flux monétaire = paiement de la librairie au fournisseur</li><li>Banque : flux réel = service de gestion des paiements ; flux monétaire = frais bancaires payés par la librairie</li><li>État : flux réel = services publics (infrastructures, sécurité…) ; flux monétaire = impôts et taxes payés (dont la TVA)</li></ul></div></div>
+    
+  <div class="bandeau bandeau-vert">⭐ AUTO-ÉVALUATION — Mission terminée, fais le point !</div>
+  <div class="eval-block"><div class="eval-row">
+    <div class="eval-label">Je sais citer les principaux agents économiques</div>
+    <div class="eval-choices">
+      <label class="chip"><input type="radio" name="p4m1-eval1" value="assure" data-field="p4m1-eval1"><span>😀 J'assure !</span></label><label class="chip"><input type="radio" name="p4m1-eval1" value="progresse" data-field="p4m1-eval1"><span>🙂 Ça va, je progresse</span></label><label class="chip"><input type="radio" name="p4m1-eval1" value="aide" data-field="p4m1-eval1"><span>😕 J'ai besoin d'aide</span></label>
+    </div>
+  </div><div class="eval-row">
+    <div class="eval-label">Je sais distinguer un flux réel d'un flux monétaire</div>
+    <div class="eval-choices">
+      <label class="chip"><input type="radio" name="p4m1-eval2" value="assure" data-field="p4m1-eval2"><span>😀 J'assure !</span></label><label class="chip"><input type="radio" name="p4m1-eval2" value="progresse" data-field="p4m1-eval2"><span>🙂 Ça va, je progresse</span></label><label class="chip"><input type="radio" name="p4m1-eval2" value="aide" data-field="p4m1-eval2"><span>😕 J'ai besoin d'aide</span></label>
+    </div>
+  </div><div class="eval-row">
+    <div class="eval-label">Je sais représenter une relation économique simple sous forme de schéma</div>
+    <div class="eval-choices">
+      <label class="chip"><input type="radio" name="p4m1-eval3" value="assure" data-field="p4m1-eval3"><span>😀 J'assure !</span></label><label class="chip"><input type="radio" name="p4m1-eval3" value="progresse" data-field="p4m1-eval3"><span>🙂 Ça va, je progresse</span></label><label class="chip"><input type="radio" name="p4m1-eval3" value="aide" data-field="p4m1-eval3"><span>😕 J'ai besoin d'aide</span></label>
+    </div>
+  </div></div>
+  <p class="italic small">Ce que je retiens de cette mission, en une phrase :</p>
+  <textarea class="field" data-field="p4m1-retiens" rows="2" placeholder="Ma phrase de synthèse…"></textarea>
+  </div></section>
+<section id="bilan">
+  <h1>🏆 Bilan de fin de parcours</h1>
+  <p>Bravo, tu as terminé tes 8 missions ! Prends quelques minutes pour faire le point sur ton parcours, quel que soit l'ordre dans lequel tu as fait les pôles.</p>
+  <div class="eval-block">
+    <div class="eval-row">
+    <div class="eval-label">Pôle 1 — avec Camille (accueil, découverte, proposition)</div>
+    <div class="eval-choices">
+      <label class="chip"><input type="radio" name="bilan-pole1" value="assure" data-field="bilan-pole1"><span>😀 J'assure !</span></label><label class="chip"><input type="radio" name="bilan-pole1" value="progresse" data-field="bilan-pole1"><span>🙂 Ça va, je progresse</span></label><label class="chip"><input type="radio" name="bilan-pole1" value="aide" data-field="bilan-pole1"><span>😕 J'ai besoin d'aide</span></label>
+    </div>
+  </div>
+    <div class="eval-row">
+    <div class="eval-label">Pôle 2 — avec Julien (satisfaire, fidéliser)</div>
+    <div class="eval-choices">
+      <label class="chip"><input type="radio" name="bilan-pole2" value="assure" data-field="bilan-pole2"><span>😀 J'assure !</span></label><label class="chip"><input type="radio" name="bilan-pole2" value="progresse" data-field="bilan-pole2"><span>🙂 Ça va, je progresse</span></label><label class="chip"><input type="radio" name="bilan-pole2" value="aide" data-field="bilan-pole2"><span>😕 J'ai besoin d'aide</span></label>
+    </div>
+  </div>
+    <div class="eval-row">
+    <div class="eval-label">Pôle 3 — traiter et diffuser l'information</div>
+    <div class="eval-choices">
+      <label class="chip"><input type="radio" name="bilan-pole3" value="assure" data-field="bilan-pole3"><span>😀 J'assure !</span></label><label class="chip"><input type="radio" name="bilan-pole3" value="progresse" data-field="bilan-pole3"><span>🙂 Ça va, je progresse</span></label><label class="chip"><input type="radio" name="bilan-pole3" value="aide" data-field="bilan-pole3"><span>😕 J'ai besoin d'aide</span></label>
+    </div>
+  </div>
+    <div class="eval-row">
+    <div class="eval-label">Pôle 4 — avec Inès (les agents économiques)</div>
+    <div class="eval-choices">
+      <label class="chip"><input type="radio" name="bilan-pole4" value="assure" data-field="bilan-pole4"><span>😀 J'assure !</span></label><label class="chip"><input type="radio" name="bilan-pole4" value="progresse" data-field="bilan-pole4"><span>🙂 Ça va, je progresse</span></label><label class="chip"><input type="radio" name="bilan-pole4" value="aide" data-field="bilan-pole4"><span>😕 J'ai besoin d'aide</span></label>
+    </div>
+  </div>
+  </div>
+  <p>La mission qui m'a le plus plu, et pourquoi :</p><textarea class="field" data-field="bilan-preferee" rows="3" placeholder="Écris ta réponse ici…"></textarea>
+  <p>Une compétence que je veux encore améliorer :</p><textarea class="field" data-field="bilan-ameliorer" rows="2" placeholder="Écris ta réponse ici…"></textarea>
+</section>
+<section id="glossaire">
+  <h1>📘 Petit glossaire</h1>
+  <table class="tbl tbl-fiche">
+    <tr><td class="fiche-key">Omnicanal</td><td>Le fait pour une entreprise d'être joignable et cohérente sur plusieurs canaux à la fois (magasin, téléphone, internet, réseaux sociaux).</td></tr>
+    <tr><td class="fiche-key">Écoute active</td><td>Une technique d'écoute qui consiste à reformuler ce que dit l'interlocuteur pour vérifier qu'on a bien compris.</td></tr>
+    <tr><td class="fiche-key">Méthode CAP</td><td>Une méthode d'argumentation : Caractéristique, Avantage, Preuve.</td></tr>
+    <tr><td class="fiche-key">Fidélisation</td><td>L'ensemble des actions menées pour qu'un client revienne régulièrement.</td></tr>
+    <tr><td class="fiche-key">RGPD</td><td>Règlement européen qui protège les données personnelles des individus.</td></tr>
+    <tr><td class="fiche-key">Indicateur</td><td>Un chiffre ou une donnée qui résume une information (ex. : une moyenne, un pourcentage).</td></tr>
+    <tr><td class="fiche-key">Agent économique</td><td>Une personne ou une organisation qui participe à la vie économique (ménage, entreprise, banque, État…).</td></tr>
+    <tr><td class="fiche-key">Flux réel / flux monétaire</td><td>Le flux réel est ce qui circule physiquement (un produit, un service) ; le flux monétaire est l'argent échangé en contrepartie.</td></tr>
+  </table>
+</section>
+
+<section id="sauvegarde-finale">
+  <div class="save-panel">
+    <button id="btnDownload" class="btn btn-or">📥 Télécharger mes réponses</button>
+    <button id="btnReset" class="btn btn-rouge">🗑️ Réinitialiser mes réponses</button>
+    <p class="small italic" id="saveDetail">💾 Sauvegarde automatique activée.</p>
+  </div>
+</section>
+
+</main>
+<footer class="footer">🎒 Carnet de mission — 2MRC — Librairie Le Hall du Livre, Nancy</footer>
+
+<script>
+const STORAGE_KEY = "carnet-hall-du-livre-reponses";
+const statusEl = document.getElementById("saveStatus");
+const detailEl = document.getElementById("saveDetail");
+let saveTimer = null;
+let storageAvailable = true;
+
+function setStatus(text){ if(statusEl) statusEl.textContent = text; if(detailEl) detailEl.textContent = text; }
+
+function collectData(){
+  const data = {};
+  document.querySelectorAll("[data-field]").forEach(el => {
+    if(el.type === "radio"){
+      if(el.checked) data[el.name] = el.value;
+    } else {
+      data[el.dataset.field] = el.value;
+    }
+  });
+  return data;
+}
+
+function applyData(data){
+  if(!data) return;
+  document.querySelectorAll("[data-field]").forEach(el => {
+    if(el.type === "radio"){
+      if(data[el.name] === el.value) el.checked = true;
+    } else if(data[el.dataset.field] !== undefined){
+      el.value = data[el.dataset.field];
+    }
+  });
+}
+
+async function loadData(){
+  try{
+    const res = await window.storage.get(STORAGE_KEY, false);
+    if(res && res.value){
+      applyData(JSON.parse(res.value));
+      setStatus("💾 Réponses chargées");
+    } else {
+      setStatus("💾 Nouveau carnet");
+    }
+  }catch(e){
+    storageAvailable = false;
+    setStatus("⚠️ Sauvegarde indisponible ici — pense à télécharger tes réponses régulièrement");
+  }
+}
+
+async function saveData(){
+  if(!storageAvailable) return;
+  try{
+    const data = collectData();
+    const result = await window.storage.set(STORAGE_KEY, JSON.stringify(data), false);
+    if(result){
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2,"0");
+      const mm = String(now.getMinutes()).padStart(2,"0");
+      setStatus("✅ Enregistré à " + hh + ":" + mm);
+    } else {
+      setStatus("⚠️ Échec de la sauvegarde, réessaie");
+    }
+  }catch(e){
+    storageAvailable = false;
+    setStatus("⚠️ Sauvegarde indisponible ici — pense à télécharger tes réponses régulièrement");
+  }
+}
+
+function scheduleSave(){
+  setStatus("✏️ Saisie en cours…");
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveData, 900);
+}
+
+document.addEventListener("input", (e) => { if(e.target.matches("[data-field]")) scheduleSave(); });
+document.addEventListener("change", (e) => { if(e.target.matches("[data-field]")) scheduleSave(); });
+
+document.getElementById("btnDownload").addEventListener("click", () => {
+  const data = collectData();
+  const labels = {};
+  document.querySelectorAll("[data-field]").forEach(el => {
+    const key = el.type === "radio" ? el.name : el.dataset.field;
+    if(!labels[key]){
+      let labelText = key;
+      const row = el.closest(".eval-row");
+      if(row) labelText = row.querySelector(".eval-label").textContent + " (auto-évaluation)";
+      const prevP = el.closest("td") ? null : el.previousElementSibling;
+      if(prevP && prevP.tagName === "P") labelText = prevP.textContent;
+      labels[key] = labelText;
+    }
+  });
+  let text = "CARNET DE MISSION — 2MRC — Le Hall du Livre\n";
+  text += "Nom : " + (data["identite-nom"]||"") + "   Prénom : " + (data["identite-prenom"]||"") + "\n";
+  text += "Export du " + new Date().toLocaleString("fr-FR") + "\n";
+  text += "========================================\n\n";
+  Object.keys(data).forEach(key => {
+    if(key.startsWith("identite-")) return;
+    const val = data[key];
+    if(!val) return;
+    text += "• " + (labels[key] || key) + "\n  → " + val + "\n\n";
+  });
+  const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "mes-reponses-hall-du-livre.txt";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+});
+
+document.getElementById("btnPdfTop").addEventListener("click", () => {
+  window.print();
+});
+
+document.getElementById("btnReset").addEventListener("click", async () => {
+  if(!confirm("Es-tu sûr(e) de vouloir effacer toutes tes réponses ? Cette action est irréversible.")) return;
+  document.querySelectorAll("[data-field]").forEach(el => {
+    if(el.type === "radio") el.checked = false; else el.value = "";
+  });
+  try{
+    await window.storage.delete(STORAGE_KEY, false);
+    setStatus("🗑️ Réponses effacées");
+  }catch(e){
+    setStatus("🗑️ Champs vidés (sauvegarde locale indisponible)");
+  }
+});
+
+loadData();
+</script>
+</body>
+</html>
